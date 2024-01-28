@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <meta name="descripe" content="فك شفرة بار كود ">
+    <script src="https://cdn.rawgit.com/serratus/quaggaJS/master/dist/quagga.min.js"></script>
+</head>
+<body>
+
+<h1>Barcode Scanner</h1>
+<p>Click the "Start Scanning" button to scan a barcode.</p>
+<button onclick="startScanning()">Start Scanning</button>
+<div id="barcode-result"></div>
+
+<script>
+    function startScanning() {
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector("#barcode-result"),
+                constraints: {
+                    width: 640,
+                    height: 480,
+                    facingMode: "environment"
+                }
+            },
+            decoder: {
+                readers: ["ean_reader", "upc_reader", "code_128_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "i2of5_reader", "2of5_reader", "code_93_reader"]
+            }
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function (result) {
+            console.log(result);
+            alert("Barcode detected: " + result.codeResult.code);
+            Quagga.stop();
+        });
+    }
+</script>
+
+</body>
+</html>
